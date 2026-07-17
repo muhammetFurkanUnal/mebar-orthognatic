@@ -1,0 +1,7 @@
+{
+	"API_KEY_OPENROUTER":"your-api-key",
+	"models":[	
+		"model-names-here"
+	],
+	"test_model":"your-test-model-here"
+}
