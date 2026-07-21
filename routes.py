@@ -5,3 +5,4 @@ router = APIRouter()
 @router.get("/health/")
 def health():
 	return {"message":"mebar-orthognatic API server works!"}
+	
