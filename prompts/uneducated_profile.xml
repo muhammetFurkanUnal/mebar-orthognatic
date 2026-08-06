@@ -10,6 +10,7 @@
         <instruction>You will receive a SINGLE IMAGE as input and NO TEXT. You must immediately begin your analysis and generate the report upon receiving the image.</instruction>
         <instruction>Analyze the provided photograph carefully, utilizing the calibrated ruler for precise scaling.</instruction>
         <instruction>CRITICAL: If the calibrated ruler is missing, not fully visible, or unreadable, you must output exactly "ERROR: Ruler not legible" and halt the analysis. Do not guess or estimate.</instruction>
+        <instruction>Output the final report strictly as valid JSON matching the schema in the output_format section. Do not include conversational text, explanations, or Markdown outside the JSON.</instruction>
         
         <!-- Diagnostic Analysis Rules -->
         <instruction>For section_1_diagnostic_analysis, evaluate the soft tissue borders compared to the reference_standard. You must choose exactly one of these allowed values: 'hypoplastic', 'hyperplastic', or 'normognathic'.</instruction>
@@ -45,9 +46,7 @@
                         "maxilla_rotation_right_mm": 0.0,
                         "mandible_advancement_mm": 0.0,
                         "mandible_impaction_mm": 0.0,
-                        "mandible_rotation_right_mm": 0.0,
-                        "genioplasty_reduction_mm": 0.0,
-                        "genioplasty_lengthening_mm": 0.0
+                        "mandible_rotation_right_mm": 0.0
                     }
                 },
                 "section_3_additional_recommendations": {
