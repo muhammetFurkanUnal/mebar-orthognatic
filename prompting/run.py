@@ -1,5 +1,5 @@
 from config import config
-from llm_handler import llm_call
+from prompting.llm_handler import llm_call
 import os
 import json
 
