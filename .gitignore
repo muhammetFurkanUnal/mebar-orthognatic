@@ -8,3 +8,4 @@ ai_models/yolo26s_pose/yolo_dataset
 ai_models/yolo26s_pose/models
 data/raw
 data/processed
+data/calibrated

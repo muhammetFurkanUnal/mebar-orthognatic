@@ -5,6 +5,10 @@ CSV_FILES at the same index, then run:
 
     python data/manifest_builder.py
 
+CSV_FILES may be shorter than IMAGE_DIRS/XML_FILES, or contain ``None``/an empty
+string for a batch whose TVL labels have not arrived yet.  Ordering remains
+index-based in every case.
+
 Only metadata is combined; images remain untouched in their raw directories.
 """
 
@@ -18,6 +22,8 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Iterable
 
+from PIL import Image, ImageOps
+
 
 # ---------------------------------------------------------------------------
 # Batch configuration: update only these three lists when a new batch arrives.
@@ -25,18 +31,25 @@ from typing import Iterable
 # Paths are relative to the project root (absolute paths are also supported).
 # ---------------------------------------------------------------------------
 IMAGE_DIRS = [
-    "data/raw/batch-1-imgs",
-    "data/raw/batch-2-imgs",
+    "data/raw/images/batch-1-imgs",
+    "data/raw/images/batch-2-imgs",
+    "data/raw/images/batch-3-imgs",
+    "data/raw/images/batch-4-imgs",
 ]
 
 XML_FILES = [
-    "data/raw/annotations batch 1 .xml",
-    "data/raw/annotations batch 2.xml",
+    "data/raw/annotations/batch-1-annotations.xml",
+    "data/raw/annotations/batch-2-annotations.xml",
+    "data/raw/annotations/batch-3-annotations.xml",
+    "data/raw/annotations/batch-4-annotations.xml",
 ]
 
 CSV_FILES = [
-    "data/raw/batch-1-TVL-labels.csv",
-    "data/raw/batch-2-TVL-labels.csv",
+    "data/raw/TVL-regression/batch-1-TVL-labels.csv",
+    "data/raw/TVL-regression/batch-2-TVL-labels.csv",
+    "data/raw/TVL-regression/batch-3-TVL-labels.csv",
+    # Use None (or "") to reserve an index for labels that have not arrived.
+    None,
 ]
 
 
@@ -74,6 +87,11 @@ def normalized_name(name: str, *, keep_wildcard: bool = False) -> str:
     # Treat Turkish dotted/dotless I identically. Some batch-2 CSV characters
     # were already replaced with '?' by the source export.
     value = value.replace("ı", "i")
+    # U+FFFD means the source decoder already lost one character. Preserve it
+    # as a one-character wildcard when matching CSV headers; match_csv_name
+    # still rejects zero or multiple matches.
+    if keep_wildcard:
+        value = value.replace("\ufffd", "?")
     allowed = {"?"} if keep_wildcard else set()
     return "".join(char for char in value if char.isalnum() or char in allowed)
 
@@ -110,6 +128,26 @@ def find_images(image_dir: Path) -> dict[str, Path]:
             )
         images[key] = path
     return images
+
+
+def read_image_dimensions(image_path: Path) -> tuple[int, int, bool]:
+    """Read actual image dimensions, applying EXIF orientation correction.
+
+    Returns
+    -------
+    (width, height, exif_transformed)
+        ``exif_transformed`` is ``True`` when the image carried an EXIF
+        orientation tag that required a dimension swap (e.g. raw sensor
+        data stored as landscape while the photo was shot in portrait).
+    """
+    with Image.open(image_path) as img:
+        raw_w, raw_h = img.size
+        transposed = ImageOps.exif_transpose(img)
+        if transposed is not None:
+            corrected_w, corrected_h = transposed.size
+            was_transformed = (raw_w, raw_h) != (corrected_w, corrected_h)
+            return corrected_w, corrected_h, was_transformed
+        return raw_w, raw_h, False
 
 
 def read_text_with_fallback(path: Path) -> str:
@@ -190,69 +228,141 @@ def parse_tvl_csv(csv_path: Path, image_keys: Iterable[str]) -> dict[str, dict[s
     return measurements
 
 
-def parse_cvat_xml(xml_path: Path, image_keys: Iterable[str]) -> dict[str, dict[str, object]]:
-    """Read image dimensions and point annotations from a CVAT XML export."""
+def parse_cvat_xml(
+    xml_path: Path, image_keys: Iterable[str]
+) -> tuple[dict[str, dict[str, object]], dict[str, list[tuple[str, str]]]]:
+    """Read CVAT annotations while retaining per-image XML validation errors."""
     expected = set(image_keys)
     annotations: dict[str, dict[str, object]] = {}
-    root = ET.parse(xml_path).getroot()
+    errors: dict[str, list[tuple[str, str]]] = {image_key: [] for image_key in expected}
+
+    def add_error(image_key: str, error_type: str, message: str) -> None:
+        errors[image_key].append((error_type, message))
+
+    try:
+        root = ET.parse(xml_path).getroot()
+    except ET.ParseError as exc:
+        message = f"Could not parse CVAT XML file {xml_path}: {exc}"
+        for image_key in expected:
+            add_error(image_key, "xml_parse_error", message)
+        return annotations, errors
 
     for image in root.findall("image"):
         xml_name = image.attrib.get("name", "")
         image_key = normalized_name(xml_name)
         if image_key not in expected:
-            raise ValueError(f"XML image {xml_name!r} in {xml_path} has no matching file")
+            continue
         if image_key in annotations:
-            raise ValueError(f"Duplicate XML image {xml_name!r} in {xml_path}")
+            add_error(
+                image_key,
+                "xml_duplicate_image",
+                f"Duplicate XML image {xml_name!r} in {xml_path}",
+            )
+            continue
 
-        record: dict[str, object] = {
-            "cvat_image_name": xml_name,
-            "width": int(image.attrib["width"]),
-            "height": int(image.attrib["height"]),
-        }
+        record: dict[str, object] = {"cvat_image_name": xml_name}
+        try:
+            record["width"] = int(image.attrib["width"])
+            record["height"] = int(image.attrib["height"])
+        except (KeyError, ValueError) as exc:
+            add_error(
+                image_key,
+                "xml_image_metadata_error",
+                f"Invalid width/height for image {xml_name!r} in {xml_path}: {exc}",
+            )
+
         seen_labels: set[str] = set()
+        valid_labels: set[str] = set()
         for point in image.findall("points"):
-            label = slug(point.attrib["label"])
-            if label in seen_labels:
-                raise ValueError(f"Duplicate point label {label!r} for {xml_name!r}")
-            seen_labels.add(label)
-            coordinates = point.attrib["points"].split(";")
-            if len(coordinates) != 1:
-                raise ValueError(
-                    f"Expected one coordinate for {label!r} in {xml_name!r}, "
-                    f"found {len(coordinates)}"
+            try:
+                label = slug(point.attrib["label"])
+                point_text = point.attrib["points"]
+            except (KeyError, ValueError) as exc:
+                add_error(
+                    image_key,
+                    "xml_point_metadata_error",
+                    f"Invalid point metadata for image {xml_name!r} in {xml_path}: {exc}",
                 )
-            x_text, y_text = coordinates[0].split(",")
-            record[f"{label}_x"] = float(x_text)
-            record[f"{label}_y"] = float(y_text)
+                continue
+            if label in seen_labels:
+                add_error(
+                    image_key,
+                    "xml_duplicate_label",
+                    f"Duplicate point label {label!r} for image {xml_name!r} in {xml_path}",
+                )
+                continue
+            seen_labels.add(label)
+            coordinates = point_text.split(";")
+            if len(coordinates) != 1:
+                add_error(
+                    image_key,
+                    "xml_multiple_coordinates",
+                    f"Expected one coordinate for label {label!r} in image {xml_name!r} "
+                    f"within XML file {xml_path}, but found {len(coordinates)} coordinates: "
+                    f"{point_text!r}",
+                )
+                continue
+            coordinate_parts = coordinates[0].split(",")
+            if len(coordinate_parts) != 2:
+                add_error(
+                    image_key,
+                    "xml_coordinate_format_error",
+                    f"Expected an 'x,y' coordinate for label {label!r} in image {xml_name!r} "
+                    f"within XML file {xml_path}, but found {coordinates[0]!r}",
+                )
+                continue
+            x_text, y_text = coordinate_parts
+            try:
+                record[f"{label}_x"] = float(x_text)
+                record[f"{label}_y"] = float(y_text)
+            except ValueError:
+                add_error(
+                    image_key,
+                    "xml_coordinate_value_error",
+                    f"Invalid numeric coordinate for label {label!r} in image {xml_name!r} "
+                    f"within XML file {xml_path}: {coordinates[0]!r}",
+                )
+                continue
+            valid_labels.add(label)
 
-        record["landmark_count"] = len(seen_labels)
+        record["landmark_count"] = len(valid_labels)
         annotations[image_key] = record
 
-    if set(annotations) != expected:
-        missing = sorted(expected - set(annotations))
-        raise ValueError(f"Images without XML annotations in {xml_path}: {missing}")
-    return annotations
+    for image_key in expected - set(annotations):
+        add_error(
+            image_key,
+            "xml_annotation_missing",
+            f"Image has no XML annotation in {xml_path}",
+        )
+    return annotations, errors
 
 
-def validate_configuration() -> list[tuple[Path, Path, Path]]:
+def validate_configuration() -> list[tuple[Path, Path, Path | None]]:
     """Resolve and validate aligned batch configuration lists."""
-    lengths = (len(IMAGE_DIRS), len(XML_FILES), len(CSV_FILES))
-    if len(set(lengths)) != 1:
+    if len(IMAGE_DIRS) != len(XML_FILES):
         raise ValueError(
-            "IMAGE_DIRS, XML_FILES and CSV_FILES must have the same length; "
-            f"got {lengths}"
+            "IMAGE_DIRS and XML_FILES must have the same length; "
+            f"got ({len(IMAGE_DIRS)}, {len(XML_FILES)})"
         )
     if not IMAGE_DIRS:
         raise ValueError("At least one batch must be configured")
+    if len(CSV_FILES) > len(IMAGE_DIRS):
+        raise ValueError(
+            "CSV_FILES cannot contain more entries than IMAGE_DIRS; "
+            f"got ({len(CSV_FILES)}, {len(IMAGE_DIRS)})"
+        )
 
     batches = []
-    for image_dir_text, xml_text, csv_text in zip(IMAGE_DIRS, XML_FILES, CSV_FILES):
+    csv_entries = list(CSV_FILES) + [None] * (len(IMAGE_DIRS) - len(CSV_FILES))
+    for image_dir_text, xml_text, csv_text in zip(IMAGE_DIRS, XML_FILES, csv_entries):
         image_dir = resolve_path(image_dir_text)
         xml_path = resolve_path(xml_text)
-        csv_path = resolve_path(csv_text)
+        csv_path = None if csv_text is None or not str(csv_text).strip() else resolve_path(csv_text)
         if not image_dir.is_dir():
             raise FileNotFoundError(f"Image directory does not exist: {image_dir}")
         for path in (xml_path, csv_path):
+            if path is None:
+                continue
             if not path.is_file():
                 raise FileNotFoundError(f"Input file does not exist: {path}")
         batches.append((image_dir, xml_path, csv_path))
@@ -270,8 +380,16 @@ def build_manifest() -> list[dict[str, object]]:
         if not images:
             raise ValueError(f"No supported images found in {image_dir}")
 
-        xml_annotations = parse_cvat_xml(xml_path, images)
-        tvl_measurements = parse_tvl_csv(csv_path, images)
+        xml_annotations, xml_errors = parse_cvat_xml(xml_path, images)
+        tvl_measurements = None
+        csv_errors: dict[str, list[tuple[str, str]]] = {image_key: [] for image_key in images}
+        if csv_path:
+            try:
+                tvl_measurements = parse_tvl_csv(csv_path, images)
+            except (OSError, UnicodeError, ValueError, csv.Error) as exc:
+                message = f"Could not parse TVL CSV file {csv_path}: {exc}"
+                for image_key in images:
+                    csv_errors[image_key].append(("csv_parse_error", message))
 
         for image_key, image_path in sorted(images.items()):
             sample_id = stable_sample_id(batch, image_path.name)
@@ -285,10 +403,49 @@ def build_manifest() -> list[dict[str, object]]:
                 "image_path": project_relative(image_path),
                 "image_name": image_path.name,
                 "source_xml": project_relative(xml_path),
-                "source_csv": project_relative(csv_path),
+                "source_csv": project_relative(csv_path) if csv_path else None,
             }
-            record.update(xml_annotations[image_key])
-            record.update(tvl_measurements[image_key])
+            record.update(xml_annotations.get(image_key, {}))
+
+            # --- Validate and correct dimensions against the actual image file ---
+            try:
+                real_w, real_h, exif_xformed = read_image_dimensions(image_path)
+                record["exif_transformed"] = exif_xformed
+                xml_w = record.get("width")
+                xml_h = record.get("height")
+                if xml_w is not None and xml_h is not None:
+                    if real_w != xml_w or real_h != xml_h:
+                        xml_errors[image_key].append(
+                            (
+                                "dimension_mismatch",
+                                f"XML dimensions ({xml_w}x{xml_h}) differ from actual "
+                                f"EXIF-corrected image dimensions ({real_w}x{real_h}) "
+                                f"for {image_path.name}. Using real dimensions.",
+                            )
+                        )
+                record["width"] = real_w
+                record["height"] = real_h
+            except Exception as exc:
+                xml_errors[image_key].append(
+                    (
+                        "dimension_read_error",
+                        f"Could not read actual image dimensions from "
+                        f"{image_path.name}: {exc}",
+                    )
+                )
+                record.setdefault("exif_transformed", False)
+            # --------------------------------------------------------------------
+            if tvl_measurements:
+                record.update(tvl_measurements[image_key])
+
+            record_errors = xml_errors[image_key] + csv_errors[image_key]
+            if record_errors:
+                record["error_type"] = "|".join(
+                    dict.fromkeys(error_type for error_type, _ in record_errors)
+                )
+                record["error_message"] = " | ".join(
+                    message for _, message in record_errors
+                )
             records.append(record)
 
     return records
@@ -305,8 +462,11 @@ def write_manifest(records: list[dict[str, object]]) -> None:
         "height",
         "landmark_count",
         "cvat_image_name",
+        "exif_transformed",
         "source_xml",
         "source_csv",
+        "error_type",
+        "error_message",
     ]
     extra_columns = sorted(set().union(*(record.keys() for record in records)) - set(fixed_columns))
     fieldnames = fixed_columns + extra_columns
