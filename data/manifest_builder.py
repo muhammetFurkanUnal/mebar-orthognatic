@@ -185,28 +185,15 @@ def match_csv_name(csv_name: str, image_keys: Iterable[str], csv_path: Path) -> 
     image_keys = list(image_keys)
     pattern = normalized_name(csv_name, keep_wildcard=True)
     matches = wildcard_matches(pattern, image_keys)
-    if len(matches) > 1:
-    if len(matches) > 1:
+    if len(matches) != 1:
         raise ValueError(
             f"CSV header {csv_name!r} in {csv_path} matched {len(matches)} images. "
             f"Matches: {matches}"
         )
-    return matches[0] if matches else normalized_name(csv_name)
-    return matches[0] if matches else normalized_name(csv_name)
+    return matches[0]
 
 
-def parse_tvl_csv(
-    csv_path: Path,
-    image_keys: Iterable[str],
-    *,
-    required_keys: Iterable[str] | None = None,
-) -> dict[str, dict[str, float]]:
-def parse_tvl_csv(
-    csv_path: Path,
-    image_keys: Iterable[str],
-    *,
-    required_keys: Iterable[str] | None = None,
-) -> dict[str, dict[str, float]]:
+def parse_tvl_csv(csv_path: Path, image_keys: Iterable[str]) -> dict[str, dict[str, float]]:
     """Transpose the source CSV so each image receives its TVL measurements."""
     text = read_text_with_fallback(csv_path)
     try:
@@ -224,8 +211,6 @@ def parse_tvl_csv(
             continue
         image_key = match_csv_name(csv_name, image_keys, csv_path)
         values: dict[str, float] = {}
-        values["csv_image_name"] = csv_name
-        values["csv_image_name"] = csv_name
         for row in rows[1:]:
             if not row or not row[0].strip():
                 continue
@@ -236,10 +221,8 @@ def parse_tvl_csv(
                 values[slug(row[0])] = number
         measurements[image_key] = values
 
-    expected = set(required_keys if required_keys is not None else image_keys)
-    if not expected <= set(measurements):
-    expected = set(required_keys if required_keys is not None else image_keys)
-    if not expected <= set(measurements):
+    expected = set(image_keys)
+    if set(measurements) != expected:
         missing = sorted(expected - set(measurements))
         raise ValueError(f"Images without CSV measurements in {csv_path}: {missing}")
     return measurements
@@ -385,13 +368,11 @@ def validate_configuration() -> list[tuple[Path, Path, Path | None]]:
         batches.append((image_dir, xml_path, csv_path))
     return batches
 
+
 def build_manifest() -> list[dict[str, object]]:
-    """Build a manifest while preserving records with missing source types."""
-    """Build a manifest while preserving records with missing source types."""
+    """Build and validate manifest records for all configured batches."""
     records: list[dict[str, object]] = []
     sample_ids: set[str] = set()
-    validation_issues: list[str] = []
-    validation_issues: list[str] = []
 
     for image_dir, xml_path, csv_path in validate_configuration():
         batch = image_dir.name
@@ -467,9 +448,9 @@ def build_manifest() -> list[dict[str, object]]:
                 )
             records.append(record)
 
-    report_manifest_results(records, validation_issues)
-    report_manifest_results(records, validation_issues)
     return records
+
+
 def write_manifest(records: list[dict[str, object]]) -> None:
     """Write records atomically enough for normal local use."""
     fixed_columns = [
