@@ -30,6 +30,7 @@ MODEL_SHORT_NAMES: dict[str, str] = {
     "google/gemini-3.1-pro-preview": "gemini",
     "anthropic/claude-opus-4.8": "claude",
     "openai/gpt-5.6-sol-pro": "gpt",
+    "deepseek/deepseek-v4-flash-vision-exp": "deepseek"
 }
 
 # Ensure output subdirectories exist
@@ -86,6 +87,7 @@ class ManifestBuilder:
         "google/gemini-3.1-pro-preview",
         "anthropic/claude-opus-4.8",
         "openai/gpt-5.6-sol-pro",
+        "deepseek/deepseek-v4-flash-vision-exp",
     ]
 
     VIEWS: List[str] = ["front", "profile"]
@@ -126,27 +128,86 @@ class ManifestBuilder:
         return str(DATA_DIR / view / patient_name)
 
     # ------------------------------------------------------------------
-    # Build full manifest
+    # Build manifest entries
     # ------------------------------------------------------------------
+
+    def build_entries_for_model(self, model: str) -> List[ManifestEntry]:
+        """Generate every configuration for a single model (patients x views x education)."""
+        entries: List[ManifestEntry] = []
+        for view in self.VIEWS:
+            for educated in self.EDUCATION_LEVELS:
+                for patient_name in self.patients:
+                    entry = ManifestEntry(
+                        educated=educated,
+                        view=view,
+                        system_prompt_path=self._system_prompt_path(educated, view),
+                        model=model,
+                        patient_name=Path(patient_name).stem,
+                        patient_image_path=self._patient_image_path(patient_name, view),
+                    )
+                    entry.output_path = self._output_path(model, view, educated, entry.configuration_id)
+                    entries.append(entry)
+        return entries
 
     def build_all_entries(self) -> List[ManifestEntry]:
         """Generate every configuration and return it as a list of entries."""
         entries: List[ManifestEntry] = []
         for model in self.MODELS:
-            for view in self.VIEWS:
-                for educated in self.EDUCATION_LEVELS:
-                    for patient_name in self.patients:
-                        entry = ManifestEntry(
-                            educated=educated,
-                            view=view,
-                            system_prompt_path=self._system_prompt_path(educated, view),
-                            model=model,
-                            patient_name=Path(patient_name).stem,
-                            patient_image_path=self._patient_image_path(patient_name, view),
-                        )
-                        entry.output_path = self._output_path(model, view, educated, entry.configuration_id)
-                        entries.append(entry)
+            entries.extend(self.build_entries_for_model(model))
         return entries
+
+    def find_missing_models(self, existing_entries: List["ManifestEntry"]) -> List[str]:
+        """Return models from MODELS that have no rows in the existing manifest."""
+        present_models = {e.model for e in existing_entries}
+        return [m for m in self.MODELS if m not in present_models]
+
+    @staticmethod
+    def _entry_key(entry: ManifestEntry) -> tuple:
+        """Logical uniqueness key for a configuration row."""
+        return (
+            entry.model,
+            entry.view,
+            entry.educated,
+            entry.patient_name.strip().lower(),
+        )
+
+    @staticmethod
+    def append_csv(entries_to_add: List[ManifestEntry], path: str | Path) -> int:
+        """
+        Append new entries to an existing manifest CSV WITHOUT touching
+        any existing row (preserves the ``done`` column state).
+
+        Duplicate protection: a row is skipped if a row with the same
+        (model, view, educated, patient_name) key already exists.
+
+        Returns the number of rows actually appended.
+        """
+        path = Path(path)
+        if not path.exists():
+            raise FileNotFoundError(
+                f"Manifest not found at {path}. Use save_csv to create it first."
+            )
+
+        existing = ManifestBuilder.load_csv(path)
+        existing_keys = {ManifestBuilder._entry_key(e) for e in existing}
+
+        field_names = [
+            "configuration_id", "educated", "view", "system_prompt_path",
+            "model", "patient_name", "patient_image_path", "output_path", "done",
+        ]
+
+        appended = 0
+        with open(path, "a", newline="") as f:
+            writer = csv.DictWriter(f, fieldnames=field_names)
+            for entry in entries_to_add:
+                key = ManifestBuilder._entry_key(entry)
+                if key in existing_keys:
+                    print(f"  [SKIP] duplicate configuration: {key}")
+                    continue
+                writer.writerow(asdict(entry))
+                existing_keys.add(key)
+                appended += 1
+        return appended
 
     @staticmethod
     def _output_path(model_full: str, view: str, educated: bool, configuration_id: str) -> str:
@@ -204,10 +265,51 @@ class ManifestBuilder:
 if __name__ == "__main__":
     import sys
 
-    builder = ManifestBuilder()
-    all_entries = builder.build_all_entries()
-
     csv_path = PROJECT_ROOT / "prompting" / "manifest.csv"
+    builder = ManifestBuilder()
+
+    if "--append" in sys.argv:
+        # Append mode: add rows for models missing from the manifest,
+        # without touching any existing row or its done state.
+        if not csv_path.exists():
+            print(f"Manifest not found at {csv_path}. Use default mode to create it first.",
+                  file=sys.stderr)
+            sys.exit(1)
+
+        existing = ManifestBuilder.load_csv(csv_path)
+        missing_models = builder.find_missing_models(existing)
+
+        print(f"Existing manifest: {csv_path}")
+        print(f"Existing rows: {len(existing)}")
+        for model, count in sorted(
+            {m: sum(1 for e in existing if e.model == m) for m in set(e.model for e in existing)}.items()
+        ):
+            print(f"  {model}: {count} rows")
+
+        if not missing_models:
+            print("\nAll models already present in the manifest. Nothing to append.")
+            sys.exit(0)
+
+        print(f"\nMissing models: {missing_models}")
+
+        entries_to_add: List[ManifestEntry] = []
+        for model in missing_models:
+            model_entries = builder.build_entries_for_model(model)
+            print(f"  Building {len(model_entries)} entries for {model}")
+            entries_to_add.extend(model_entries)
+
+        appended = ManifestBuilder.append_csv(entries_to_add, csv_path)
+        total_after = len(ManifestBuilder.load_csv(csv_path))
+
+        print()
+        print("=" * 50)
+        print(f"Appended:  {appended} rows")
+        print(f"Total now: {total_after} rows")
+        print("=" * 50)
+        sys.exit(0)
+
+    # Default mode: build a fresh manifest from scratch (OVERWRITES!)
+    all_entries = builder.build_all_entries()
     ManifestBuilder.save_csv(all_entries, csv_path)
     print(f"Manifest saved to {csv_path}")
     print(f"Total configurations: {len(all_entries)}")
