@@ -48,8 +48,8 @@ CSV_FILES = [
     "data/raw/TVL-regression/batch-1-TVL-labels.csv",
     "data/raw/TVL-regression/batch-2-TVL-labels.csv",
     "data/raw/TVL-regression/batch-3-TVL-labels.csv",
+    None
     # Use None (or "") to reserve an index for labels that have not arrived.
-    None,
 ]
 
 

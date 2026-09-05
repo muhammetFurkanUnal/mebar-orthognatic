@@ -83,6 +83,7 @@ def read_manifest(path: Path, project_root: Path) -> list[dict[str, object]]:
             raise ValueError(f"Manifest is missing columns: {sorted(missing)}")
 
         samples: list[dict[str, object]] = []
+        skipped: list[tuple[str, int]] = []
         seen_ids: set[str] = set()
         for line_number, row in enumerate(reader, start=2):
             sample_id = row["sample_id"].strip()
@@ -105,10 +106,23 @@ def read_manifest(path: Path, project_root: Path) -> list[dict[str, object]]:
             try:
                 width = int(row["width"])
                 height = int(row["height"])
-                coordinates = [
-                    (float(row[f"{name}_x"]), float(row[f"{name}_y"]))
-                    for name in KEYPOINTS
-                ]
+            except ValueError as error:
+                raise ValueError(
+                    f"Invalid image size at manifest line {line_number}"
+                ) from error
+
+            raw_coordinates = [
+                (row[f"{name}_x"].strip(), row[f"{name}_y"].strip())
+                for name in KEYPOINTS
+            ]
+            if any(x == "" or y == "" for x, y in raw_coordinates):
+                # Samples without complete annotations are unusable for pose
+                # training; skip them instead of failing the whole conversion.
+                skipped.append((sample_id, line_number))
+                continue
+
+            try:
+                coordinates = [(float(x), float(y)) for x, y in raw_coordinates]
             except ValueError as error:
                 raise ValueError(
                     f"Invalid numeric value at manifest line {line_number}"
@@ -135,7 +149,12 @@ def read_manifest(path: Path, project_root: Path) -> list[dict[str, object]]:
             )
 
     if not samples:
-        raise ValueError(f"Manifest contains no samples: {path}")
+        raise ValueError(f"Manifest contains no usable samples: {path}")
+    if skipped:
+        print(
+            f"Skipped {len(skipped)} sample(s) with missing keypoint "
+            f"coordinates: {[sample_id for sample_id, _ in skipped]}"
+        )
     return samples
 
 

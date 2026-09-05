@@ -10,3 +10,5 @@ data/raw
 data/processed
 data/labeled
 data/calibrated
+checkpoints
+yolo26n.pt
