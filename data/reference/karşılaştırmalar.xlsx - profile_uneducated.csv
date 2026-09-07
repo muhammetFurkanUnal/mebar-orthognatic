@@ -1,0 +1,151 @@
+model_short,patient_name,midface,upper_lip,lower_lip,chin_pogonion,maxilla_advancement_mm,maxilla_impaction_mm,mandible_advancement_mm(POG),mandible_impaction_mm(POG)
+reference,ali başbuğ,,,,,6,"0,2","-6,8","1,2"
+claude,ali başbuğ,normognathic,normognathic,hyperplastic,hypoplastic,1,2,4,0
+deepseek,ali başbuğ,normognathic,hyperplastic,hyperplastic,hypoplastic,0,0,6,0
+gemini,ali başbuğ,hypoplastic,hypoplastic,hyperplastic,hyperplastic,6,0,-7,0
+gpt,ali başbuğ,hypoplastic,hypoplastic,hyperplastic,hyperplastic,5,0,-3,0
+reference,büşra berre yokuş,,,,,"2,2","2,3",0,"0,8"
+claude,büşra berre yokuş,normognathic,normognathic,hypoplastic,hypoplastic,0,0,6,0
+deepseek,büşra berre yokuş,normognathic,normognathic,hypoplastic,hypoplastic,0,0,6,0
+gemini,büşra berre yokuş,hypoplastic,hypoplastic,hyperplastic,hyperplastic,5,0,-3,0
+gpt,büşra berre yokuş,normognathic,normognathic,hyperplastic,hypoplastic,0,0,6,0
+reference,büşra kaynar,,,,,5,"0,7","1,1","1,1"
+claude,büşra kaynar,normognathic,normognathic,hyperplastic,hypoplastic,2,2,7,0
+deepseek,büşra kaynar,hypoplastic,hypoplastic,hyperplastic,hypoplastic,3,0,2,0
+gemini,büşra kaynar,hypoplastic,hypoplastic,hyperplastic,hyperplastic,6,0,-4,0
+gpt,büşra kaynar,hypoplastic,hypoplastic,hyperplastic,hyperplastic,5,0,-3,0
+reference,canberk topçu,,,,,"7,5",1,"-2,1","4,5"
+claude,canberk topçu,normognathic,normognathic,hypoplastic,hypoplastic,0,2,7,0
+deepseek,canberk topçu,normognathic,hypoplastic,hypoplastic,hypoplastic,1,0,5,0
+gemini,canberk topçu,hypoplastic,hypoplastic,hyperplastic,hyperplastic,"4,5",0,-5,0
+gpt,canberk topçu,hypoplastic,hypoplastic,hyperplastic,hyperplastic,0,0,0,0
+reference,çağrı burak çizmaz,,,,,0,"1,5","9,1",2
+claude,çağrı burak çizmaz,normognathic,normognathic,hypoplastic,hypoplastic,0,"1,5","6,5",0
+deepseek,çağrı burak çizmaz,hypoplastic,normognathic,hyperplastic,hypoplastic,2,0,8,0
+gemini,çağrı burak çizmaz,hypoplastic,normognathic,normognathic,hypoplastic,2,0,15,0
+gpt,çağrı burak çizmaz,normognathic,hyperplastic,hyperplastic,hypoplastic,0,0,8,0
+reference,delal kaygusuz,,,,,"2,9","0,1",4,"6,8"
+claude,delal kaygusuz,normognathic,normognathic,hyperplastic,hypoplastic,"1,5",2,"4,5",0
+deepseek,delal kaygusuz,normognathic,hyperplastic,hyperplastic,hypoplastic,0,0,10,0
+gemini,delal kaygusuz,hypoplastic,hypoplastic,hypoplastic,hypoplastic,4,0,12,0
+gpt,delal kaygusuz,normognathic,hypoplastic,normognathic,hyperplastic,0,0,0,0
+reference,gamze öksüz,,,,,3,"0,1","10,8","2,6"
+claude,gamze öksüz,hypoplastic,hypoplastic,hyperplastic,hyperplastic,5,2,-6,0
+deepseek,gamze öksüz,normognathic,hyperplastic,normognathic,hypoplastic,-3,0,5,0
+gemini,gamze öksüz,hypoplastic,hypoplastic,hypoplastic,hypoplastic,4,0,12,0
+gpt,gamze öksüz,normognathic,normognathic,normognathic,hypoplastic,0,0,0,0
+reference,halime cemre tosun,,,,,7,5,"0,5","4,3"
+claude,halime cemre tosun,hypoplastic,hypoplastic,hyperplastic,hyperplastic,5,2,-4,1
+deepseek,halime cemre tosun,normognathic,normognathic,hyperplastic,hypoplastic,0,0,6,0
+gemini,halime cemre tosun,hypoplastic,normognathic,hypoplastic,hypoplastic,2,2,7,0
+gpt,halime cemre tosun,indeterminate,indeterminate,indeterminate,indeterminate,0,0,0,0
+reference,hümeyra çimen,,,,,"5,2","3,1","8,8","4,3"
+claude,hümeyra çimen,normognathic,normognathic,hyperplastic,hypoplastic,2,2,7,0
+deepseek,hümeyra çimen,normognathic,normognathic,hypoplastic,hypoplastic,0,0,10,0
+gemini,hümeyra çimen,normognathic,normognathic,hypoplastic,hypoplastic,0,0,12,0
+gpt,hümeyra çimen,normognathic,normognathic,normognathic,hypoplastic,0,0,0,0
+reference,mahmut aydemir,,,,,9,"0,3","-4,4","4,2"
+claude,mahmut aydemir,hypoplastic,hypoplastic,hyperplastic,hyperplastic,"6,5",2,-5,"1,5"
+deepseek,mahmut aydemir,hypoplastic,normognathic,hypoplastic,hypoplastic,2,0,7,0
+gemini,mahmut aydemir,hypoplastic,hypoplastic,normognathic,hyperplastic,7,0,-6,0
+gpt,mahmut aydemir,hypoplastic,hypoplastic,normognathic,hyperplastic,4,0,-3,0
+reference,merve akgün,,,,,2,"0,3",11,"3,2"
+claude,merve akgün,normognathic,normognathic,hyperplastic,hypoplastic,"1,5",2,"5,5",0
+deepseek,merve akgün,normognathic,hypoplastic,normognathic,hypoplastic,0,0,8,0
+gemini,merve akgün,hypoplastic,hypoplastic,hyperplastic,hyperplastic,5,0,-4,0
+gpt,merve akgün,normognathic,normognathic,normognathic,hypoplastic,0,0,0,0
+reference,miran gökalp,,,,,"6,4","2,09","1,29","1,32"
+claude,miran gökalp,normognathic,normognathic,hypoplastic,hypoplastic,0,0,5,0
+deepseek,miran gökalp,hypoplastic,hyperplastic,hyperplastic,hypoplastic,0,0,8,0
+gemini,miran gökalp,hypoplastic,hypoplastic,hyperplastic,hyperplastic,4,0,-3,0
+gpt,miran gökalp,hypoplastic,hypoplastic,normognathic,hyperplastic,4,0,-2,0
+reference,mizgin azizoğlu,,,,,"3,03","2,78","15,57","0,66"
+claude,mizgin azizoğlu,normognathic,normognathic,hyperplastic,hypoplastic,1,2,"6,5",0
+deepseek,mizgin azizoğlu,hypoplastic,hypoplastic,normognathic,hypoplastic,3,0,5,0
+gemini,mizgin azizoğlu,hypoplastic,hypoplastic,hypoplastic,hypoplastic,3,0,15,0
+gpt,mizgin azizoğlu,normognathic,normognathic,normognathic,hypoplastic,0,0,5,0
+reference,mustafa öksüz,,,,,"1,8","8,6","16,4","4,4"
+claude,mustafa öksüz,normognathic,hyperplastic,hypoplastic,hypoplastic,-2,3,7,0
+deepseek,mustafa öksüz,hypoplastic,hypoplastic,hyperplastic,hypoplastic,3,0,6,0
+gemini,mustafa öksüz,hypoplastic,hypoplastic,hypoplastic,hypoplastic,4,2,15,0
+gpt,mustafa öksüz,normognathic,normognathic,hyperplastic,hypoplastic,0,0,0,0
+reference,nazlı ariç,,,,,"5,5",2,"0,4","2,7"
+claude,nazlı ariç,normognathic,normognathic,hyperplastic,hypoplastic,0,1,"6,5",0
+deepseek,nazlı ariç,normognathic,hypoplastic,normognathic,hypoplastic,2,0,2,0
+gemini,nazlı ariç,hypoplastic,hypoplastic,hyperplastic,hyperplastic,5,0,-6,0
+gpt,nazlı ariç,normognathic,normognathic,hypoplastic,hypoplastic,0,0,5,0
+reference,nida nur türk,,,,,0,"1,27","21,73","2,27"
+claude,nida nur türk,hypoplastic,normognathic,hyperplastic,hyperplastic,"4,5",2,-5,"1,5"
+deepseek,nida nur türk,hypoplastic,normognathic,hypoplastic,hypoplastic,0,0,10,0
+gemini,nida nur türk,hypoplastic,normognathic,hyperplastic,hypoplastic,2,"1,5",5,0
+gpt,nida nur türk,normognathic,normognathic,hypoplastic,hypoplastic,0,0,0,0
+reference,orkun civcik,,,,,"6,5",1,-2,"2,6"
+claude,orkun civcik,normognathic,normognathic,hypoplastic,hypoplastic,0,1,6,0
+deepseek,orkun civcik,normognathic,hypoplastic,hyperplastic,hypoplastic,2,0,8,0
+gemini,orkun civcik,hypoplastic,hypoplastic,hyperplastic,hyperplastic,5,0,-7,0
+gpt,orkun civcik,,,,,0,0,0,0
+reference,ömer baş,,,,,7,"3,2","2,4","5,7"
+claude,ömer baş,normognathic,normognathic,hyperplastic,hypoplastic,1,2,5,0
+deepseek,ömer baş,hypoplastic,normognathic,normognathic,hypoplastic,3,0,5,0
+gemini,ömer baş,hypoplastic,hypoplastic,hyperplastic,hyperplastic,4,0,-4,0
+gpt,ömer baş,normognathic,hypoplastic,normognathic,hyperplastic,0,0,0,0
+reference,özge sekmen,,,,,"4,9","1,1","-1,7","1,8"
+claude,özge sekmen,normognathic,normognathic,hyperplastic,hyperplastic,2,2,-4,0
+deepseek,özge sekmen,hypoplastic,normognathic,hyperplastic,hypoplastic,0,0,3,0
+gemini,özge sekmen,normognathic,normognathic,normognathic,hypoplastic,0,0,12,0
+gpt,özge sekmen,normognathic,normognathic,normognathic,hypoplastic,0,0,0,0
+reference,safa eren ekinci,,,,,"5,6","2,8","2,9","6,1"
+claude,safa eren ekinci,normognathic,normognathic,hypoplastic,hypoplastic,0,2,6,0
+deepseek,safa eren ekinci,normognathic,normognathic,normognathic,hypoplastic,0,0,8,0
+gemini,safa eren ekinci,hypoplastic,hypoplastic,hyperplastic,hyperplastic,5,0,-6,0
+gpt,safa eren ekinci,hypoplastic,hypoplastic,hypoplastic,hyperplastic,0,0,0,0
+reference,sara eren,,,,,7,0,"-4,1","0,5"
+claude,sara eren,normognathic,normognathic,hyperplastic,hypoplastic,1,2,6,0
+deepseek,sara eren,normognathic,hyperplastic,hypoplastic,hypoplastic,0,0,6,0
+gemini,sara eren,hypoplastic,hypoplastic,hyperplastic,hyperplastic,5,0,-6,0
+gpt,sara eren,normognathic,hypoplastic,normognathic,hypoplastic,0,0,0,0
+reference,serra kale,,,,,"4,5","1,1","9,9",2
+claude,serra kale,normognathic,normognathic,hyperplastic,hypoplastic,0,2,6,0
+deepseek,serra kale,normognathic,normognathic,normognathic,hypoplastic,0,0,3,0
+gemini,serra kale,hypoplastic,hypoplastic,hypoplastic,hypoplastic,2,0,15,0
+gpt,serra kale,normognathic,normognathic,hypoplastic,hypoplastic,0,0,8,0
+reference,sezer doğan,,,,,"6,1",0,"-0,9",6
+claude,sezer doğan,normognathic,normognathic,hypoplastic,hypoplastic,1,2,"6,5",0
+deepseek,sezer doğan,hypoplastic,normognathic,hypoplastic,hypoplastic,2,0,3,0
+gemini,sezer doğan,hypoplastic,hypoplastic,hyperplastic,hyperplastic,5,0,-3,0
+gpt,sezer doğan,normognathic,hypoplastic,hypoplastic,hypoplastic,0,0,0,0
+reference,sezer karu,,,,,"5,58","3,52","4,79","3,88"
+claude,sezer karu,normognathic,normognathic,hypoplastic,hypoplastic,0,0,5,0
+deepseek,sezer karu,normognathic,hyperplastic,hyperplastic,hypoplastic,0,0,6,0
+gemini,sezer karu,hypoplastic,hypoplastic,hyperplastic,hyperplastic,4,0,-4,0
+gpt,sezer karu,normognathic,normognathic,hypoplastic,hypoplastic,0,0,0,0
+reference,sosun yalmaç,,,,,"6,51","1,94","0,73","0,76"
+claude,sosun yalmaç,normognathic,normognathic,hyperplastic,hypoplastic,0,2,5,0
+deepseek,sosun yalmaç,normognathic,normognathic,normognathic,hypoplastic,0,0,0,0
+gemini,sosun yalmaç,hypoplastic,hypoplastic,hyperplastic,hypoplastic,5,2,-2,0
+gpt,sosun yalmaç,normognathic,normognathic,normognathic,hypoplastic,0,0,0,0
+reference,süleyman taş,,,,,5,"1,8","7,2","4,3"
+claude,süleyman taş,normognathic,normognathic,hypoplastic,hypoplastic,1,2,"6,5",0
+deepseek,süleyman taş,hypoplastic,hypoplastic,hyperplastic,hypoplastic,2,0,4,0
+gemini,süleyman taş,normognathic,normognathic,hypoplastic,hypoplastic,4,2,18,0
+gpt,süleyman taş,normognathic,normognathic,normognathic,hypoplastic,0,0,0,0
+reference,sümeyye sevde suiçmez,,,,,2,"7,5","15,3","4,7"
+claude,sümeyye sevde suiçmez,normognathic,hyperplastic,hyperplastic,hypoplastic,-2,"2,5",6,0
+deepseek,sümeyye sevde suiçmez,hypoplastic,normognathic,hyperplastic,hypoplastic,4,0,6,0
+gemini,sümeyye sevde suiçmez,hypoplastic,normognathic,hypoplastic,hypoplastic,2,3,14,0
+gpt,sümeyye sevde suiçmez,normognathic,normognathic,normognathic,hypoplastic,0,0,0,0
+reference,tuğçe demir,,,,,"6,88","0,11","-4,8","3,25"
+claude,tuğçe demir,normognathic,normognathic,hyperplastic,hypoplastic,1,2,6,0
+deepseek,tuğçe demir,hypoplastic,hypoplastic,hypoplastic,hypoplastic,2,0,8,0
+gemini,tuğçe demir,hypoplastic,hypoplastic,hyperplastic,hyperplastic,6,0,-5,0
+gpt,tuğçe demir,normognathic,hypoplastic,hypoplastic,normognathic,0,0,0,0
+reference,veysel geylani,,,,,"5,5","0,3","3,8","0,2"
+claude,veysel geylani,normognathic,normognathic,hypoplastic,hypoplastic,0,0,6,0
+deepseek,veysel geylani,normognathic,hyperplastic,hypoplastic,hypoplastic,0,0,7,0
+gemini,veysel geylani,hypoplastic,hypoplastic,hyperplastic,hyperplastic,5,0,-4,0
+gpt,veysel geylani,hypoplastic,hypoplastic,hyperplastic,hyperplastic,0,0,0,0
+reference,yunus keklik,,,,,"5,5","0,09","9,08","0,18"
+claude,yunus keklik,normognathic,normognathic,hyperplastic,hyperplastic,2,"1,5",-4,0
+deepseek,yunus keklik,hypoplastic,hypoplastic,hyperplastic,hypoplastic,2,0,4,0
+gemini,yunus keklik,hypoplastic,hypoplastic,hyperplastic,hyperplastic,5,0,-4,0
+gpt,yunus keklik,normognathic,normognathic,hypoplastic,hypoplastic,0,0,0,0

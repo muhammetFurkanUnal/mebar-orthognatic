@@ -1,0 +1,151 @@
+model_short,patient_name,nasal_tip_deviation_right_mm,chin_point_deviation_right_mm
+reference,ali başbuğ,,
+claude,ali başbuğ,"-1,5",-4
+deepseek,ali başbuğ,0,0
+gemini,ali başbuğ,"1,5",0
+gpt,ali başbuğ,"0,8","1,6"
+reference,büşra berre yokuş,,
+claude,büşra berre yokuş,"-1,5",-3
+deepseek,büşra berre yokuş,0,0
+gemini,büşra berre yokuş,1,-2
+gpt,büşra berre yokuş,"3,2","1,1"
+reference,büşra kaynar,,
+claude,büşra kaynar,"1,2","-3,5"
+deepseek,büşra kaynar,"-1,5",-2
+gemini,büşra kaynar,"-1,3","-6,7"
+gpt,büşra kaynar,"0,4",0
+reference,canberk topçu,,
+claude,canberk topçu,"1,5",-3
+deepseek,canberk topçu,2,2
+gemini,canberk topçu,"1,5","-3,5"
+gpt,canberk topçu,"2,5",-2
+reference,çağrı burak çizmaz,,
+claude,çağrı burak çizmaz,"1,5",-4
+deepseek,çağrı burak çizmaz,0,0
+gemini,çağrı burak çizmaz,0,-3
+gpt,çağrı burak çizmaz,"2,5",2
+reference,delal kaygusuz,,
+claude,delal kaygusuz,"1,5",-3
+deepseek,delal kaygusuz,"-0,5",-1
+gemini,delal kaygusuz,"1,7",0
+gpt,delal kaygusuz,"0,8","-1,5"
+reference,gamze öksüz,,
+claude,gamze öksüz,"-1,5",-3
+deepseek,gamze öksüz,0,0
+gemini,gamze öksüz,"1,5","4,5"
+gpt,gamze öksüz,"2,4",0
+reference,halime cemre tosun,,
+claude,halime cemre tosun,"-1,5",-3
+deepseek,halime cemre tosun,0,0
+gemini,halime cemre tosun,0,0
+gpt,halime cemre tosun,"-0,8",0
+reference,hümeyra çimen,,
+claude,hümeyra çimen,"-1,5",-3
+deepseek,hümeyra çimen,0,0
+gemini,hümeyra çimen,"1,5",-3
+gpt,hümeyra çimen,"1,1","1,8"
+reference,mahmut aydemir,,
+claude,mahmut aydemir,"-1,5","-3,5"
+deepseek,mahmut aydemir,0,0
+gemini,mahmut aydemir,-3,5
+gpt,mahmut aydemir,3,"1,5"
+reference,merve akgün,,
+claude,merve akgün,"1,5",-4
+deepseek,merve akgün,0,0
+gemini,merve akgün,0,0
+gpt,merve akgün,"-2,1",0
+reference,miran gökalp,,
+claude,miran gökalp,"-1,5",-3
+deepseek,miran gökalp,0,0
+gemini,miran gökalp,"2,1","-4,2"
+gpt,miran gökalp,"4,1",0
+reference,mizgin azizoğlu,,
+claude,mizgin azizoğlu,"1,5",-4
+deepseek,mizgin azizoğlu,0,0
+gemini,mizgin azizoğlu,0,0
+gpt,mizgin azizoğlu,"-3,3",0
+reference,mustafa öksüz,,
+claude,mustafa öksüz,"-1,5",-4
+deepseek,mustafa öksüz,"-0,5",0
+gemini,mustafa öksüz,"2,2","3,4"
+gpt,mustafa öksüz,"-4,3","-2,7"
+reference,nazlı ariç,,
+claude,nazlı ariç,"1,5","-3,5"
+deepseek,nazlı ariç,0,0
+gemini,nazlı ariç,"1,5",-4
+gpt,nazlı ariç,"-0,6","-1,2"
+reference,nida nur türk,,
+claude,nida nur türk,"-1,5",-3
+deepseek,nida nur türk,0,0
+gemini,nida nur türk,-1,"7,5"
+gpt,nida nur türk,"-1,2","-0,8"
+reference,orkun civcik,,
+claude,orkun civcik,"-1,5",-3
+deepseek,orkun civcik,0,0
+gemini,orkun civcik,0,"-3,5"
+gpt,orkun civcik,"-2,1","4,3"
+reference,ömer baş,,
+claude,ömer baş,"1,5",-3
+deepseek,ömer baş,0,0
+gemini,ömer baş,"3,6","5,7"
+gpt,ömer baş,"-1,5","4,5"
+reference,özge sekmen,,
+claude,özge sekmen,"-1,5",-3
+deepseek,özge sekmen,0,0
+gemini,özge sekmen,0,0
+gpt,özge sekmen,"-0,8","0,8"
+reference,safa eren ekinci,,
+claude,safa eren ekinci,"1,5","-3,5"
+deepseek,safa eren ekinci,0,0
+gemini,safa eren ekinci,"1,5","7,5"
+gpt,safa eren ekinci,"-0,6","-0,2"
+reference,sara eren,,
+claude,sara eren,"-1,5","-3,5"
+deepseek,sara eren,"-0,5",-1
+gemini,sara eren,"-0,4","-2,3"
+gpt,sara eren,0,"-2,5"
+reference,serra kale,,
+claude,serra kale,"-1,5",-3
+deepseek,serra kale,0,0
+gemini,serra kale,0,0
+gpt,serra kale,"-4,1",0
+reference,sezer doğan,,
+claude,sezer doğan,"1,5","-3,5"
+deepseek,sezer doğan,0,0
+gemini,sezer doğan,0,0
+gpt,sezer doğan,"1,6",0
+reference,sezer karu,,
+claude,sezer karu,"1,5",-3
+deepseek,sezer karu,0,0
+gemini,sezer karu,"1,5","-1,3"
+gpt,sezer karu,"2,7","1,7"
+reference,sosun yalmaç,,
+claude,sosun yalmaç,"-1,5",-3
+deepseek,sosun yalmaç,1,"-1,5"
+gemini,sosun yalmaç,-1,"-4,5"
+gpt,sosun yalmaç,"1,8","2,3"
+reference,süleyman taş,,
+claude,süleyman taş,"1,5","-3,5"
+deepseek,süleyman taş,0,0
+gemini,süleyman taş,"1,5",-3
+gpt,süleyman taş,"-8,9","3,2"
+reference,sümeyye sevde suiçmez,,
+claude,sümeyye sevde suiçmez,"1,5","-4,5"
+deepseek,sümeyye sevde suiçmez,-2,2
+gemini,sümeyye sevde suiçmez,-1,"-7,5"
+gpt,sümeyye sevde suiçmez,1,2
+reference,tuğçe demir,,
+claude,tuğçe demir,"-1,5","-3,5"
+deepseek,tuğçe demir,0,0
+gemini,tuğçe demir,"1,1","-8,4"
+gpt,tuğçe demir,0,0
+reference,veysel geylani,,
+claude,veysel geylani,"0,8","-2,5"
+deepseek,veysel geylani,0,0
+gemini,veysel geylani,"1,7","1,2"
+gpt,veysel geylani,"-1,1","0,5"
+reference,yunus keklik,,
+claude,yunus keklik,"1,5",-3
+deepseek,yunus keklik,0,3
+gemini,yunus keklik,"4,1","2,2"
+gpt,yunus keklik,-4,3
